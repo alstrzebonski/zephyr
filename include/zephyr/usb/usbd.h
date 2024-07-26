@@ -197,6 +197,7 @@ struct usbd_status {
 	unsigned int rwup : 1;
 	/** USB device speed */
 	enum usbd_speed speed : 2;
+	unsigned int enable_wouldblock : 1;
 };
 
 struct usbd_context;

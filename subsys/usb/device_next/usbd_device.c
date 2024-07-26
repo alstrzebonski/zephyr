@@ -241,9 +241,16 @@ int usbd_enable(struct usbd_context *const uds_ctx)
 
 	ret = udc_enable(uds_ctx->dev);
 	if (ret != 0) {
+		if (ret == -EWOULDBLOCK) {
+			uds_ctx->status.enable_wouldblock = true;
+			ret = 0;
+			goto enable_exit;
+		}
+		uds_ctx->status.enable_wouldblock = false;
 		LOG_ERR("Failed to enable controller");
 		goto enable_exit;
 	}
+	uds_ctx->status.enable_wouldblock = false;
 
 	ret = usbd_init_control_pipe(uds_ctx);
 	if (ret != 0) {

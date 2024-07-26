@@ -189,7 +189,7 @@ static inline int usbhs_enable_core(const struct device *dev)
 				  (CONFIG_UDC_DWC2_USBHS_VBUS_READY_TIMEOUT_MS < 0) ? K_FOREVER :
 				  K_MSEC(CONFIG_UDC_DWC2_USBHS_VBUS_READY_TIMEOUT_MS))) {
 			LOG_ERR("Waiting for VBUS ready timed out");
-			return -EIO;
+			return -EWOULDBLOCK;
 		}
 	}
 
