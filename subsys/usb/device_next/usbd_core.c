@@ -92,6 +92,27 @@ static void usbd_class_bcast_event(struct usbd_context *const uds_ctx,
 	}
 }
 
+void usbd_config_classes_enable(struct usbd_config_node *const cfg_nd, const bool enable);
+
+static int event_handler_bus_removed(struct usbd_context *const uds_ctx)
+{
+	struct usbd_config_node *cfg_nd;
+
+	if (!usbd_state_is_configured(uds_ctx)) {
+		return 0;
+	}
+
+	cfg_nd = usbd_config_get_current(uds_ctx);
+	if (cfg_nd == NULL) {
+		LOG_ERR("Failed to get cfg_nd, despite configured state");
+		return -ENODATA;
+	}
+
+	usbd_config_classes_enable(cfg_nd, false);
+
+	return 0;
+}
+
 static int event_handler_bus_reset(struct usbd_context *const uds_ctx)
 {
 	enum udc_bus_speed udc_speed;
@@ -139,6 +160,7 @@ static ALWAYS_INLINE void usbd_event_handler(struct usbd_context *const uds_ctx,
 	switch (event->type) {
 	case UDC_EVT_VBUS_REMOVED:
 		LOG_DBG("VBUS remove event");
+		err = event_handler_bus_removed(uds_ctx);
 		usbd_msg_pub_simple(uds_ctx, USBD_MSG_VBUS_REMOVED, 0);
 		break;
 	case UDC_EVT_VBUS_READY:

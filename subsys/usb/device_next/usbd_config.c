@@ -56,8 +56,7 @@ usbd_config_get_current(struct usbd_context *const uds_ctx)
 			       usbd_get_config_value(uds_ctx));
 }
 
-static void usbd_config_classes_enable(struct usbd_config_node *const cfg_nd,
-				       const bool enable)
+void usbd_config_classes_enable(struct usbd_config_node *const cfg_nd, const bool enable)
 {
 	struct usbd_class_node *c_nd;
 
